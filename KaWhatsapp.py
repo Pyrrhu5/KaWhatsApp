@@ -7,7 +7,7 @@ import pickle
 
 try:
 	from selenium import webdriver
-	from selenium.common.exceptions import NoSuchElementException
+	from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException 
 	from googletrans import Translator	
 except ModuleNotFoundError:
 	print("Missing dependency. Run:\npip install -r requirements.txt")
@@ -91,6 +91,7 @@ def is_logged_in(browser):
 
 def translate_conversation(browser):
 	separator = "="*20
+	n = 0 # number of elements translated
 
 	for msgParent in browser.find_elements_by_class_name("message-in"):
 		try:
@@ -102,9 +103,13 @@ def translate_conversation(browser):
 			if separator not in txt and len(txt) != 0 and ord(txt[0]) in ALPHABET_RANGE:
 				translated = translator.translate(txt, src='ka', dest='en')
 				browser.execute_script("arguments[0].innerHTML += '<br>' + arguments[2] + '<br>' + arguments[1] + '<br>' + arguments[2];", msgParent, translated.text, separator)
+				n += 1
 		except NoSuchElementException:
-				continue
+			continue
+		except StaleElementReferenceException:
+			continue
 
+	print(f"{n} elements translated.")
 
 if __name__ == "__main__":
 	try:
