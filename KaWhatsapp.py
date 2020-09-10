@@ -135,4 +135,7 @@ if __name__ == "__main__":
 		while True:
 			translate_conversation(browser)
 	except KeyboardInterrupt:
-		on_exit(browser)
+		print("Bye.")
+		sleep(1)
+		exit(0)
+		# on_exit(browser)
