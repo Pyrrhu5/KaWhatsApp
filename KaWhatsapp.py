@@ -111,7 +111,7 @@ def translate_conversation(browser):
 			msgParent = msgParent.find_element_by_tag_name("span")
 			txt = msgParent.text
 			# avoid already translated, smiley, images and none georgian
-			if separator not in txt and len(txt) != 0 and detect_language(txt):
+			if separator not in txt and detect_language(txt):
 				translated = translator.translate(txt, src='ka', dest='en')
 				browser.execute_script("arguments[0].innerHTML += '<br>' + arguments[2] + '<br>' + arguments[1] + '<br>' + arguments[2];", msgParent, translated.text, separator)
 				n += 1
