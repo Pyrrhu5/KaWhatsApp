@@ -4,6 +4,7 @@
 import os
 from time import sleep
 import pickle
+import re
 
 try:
 	from selenium import webdriver
@@ -53,10 +54,11 @@ def load_cookies(browser):
 
 
 def save_cookies(browser):
-	print("Saving cookies...")
-	cookiesPath = os.path.join(APP_PATH, "assets", "cookies.pkl")
-	with open(cookiesPath, "wb") as f:
-		pickle.dump(browser.get_cookies(), f)
+	pass
+	# print("Saving cookies...")
+	# cookiesPath = os.path.join(APP_PATH, "assets", "cookies.pkl")
+	# with open(cookiesPath, "wb") as f:
+	# 	pickle.dump(browser.get_cookies(), f)
 
 
 def on_start():
@@ -95,6 +97,9 @@ def is_logged_in(browser):
 				return None
 	
 
+def detect_language(txt):
+	return re.search(r"[\u10D0-\u10F1]+", txt) is not None
+
 def translate_conversation(browser):
 	separator = "="*20
 	n = 0 # number of elements translated
@@ -106,7 +111,7 @@ def translate_conversation(browser):
 			msgParent = msgParent.find_element_by_tag_name("span")
 			txt = msgParent.text
 			# avoid already translated, smiley, images and none georgian
-			if separator not in txt and len(txt) != 0 and ord(txt[0]) in ALPHABET_RANGE:
+			if separator not in txt and len(txt) != 0 and detect_language(txt):
 				translated = translator.translate(txt, src='ka', dest='en')
 				browser.execute_script("arguments[0].innerHTML += '<br>' + arguments[2] + '<br>' + arguments[1] + '<br>' + arguments[2];", msgParent, translated.text, separator)
 				n += 1
