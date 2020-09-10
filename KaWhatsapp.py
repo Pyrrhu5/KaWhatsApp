@@ -73,7 +73,6 @@ def on_start():
 
 def on_exit(browser):
 	# save_cookies(browser)
-	browser.close()
 	print("Bye.")
 	sleep(1)
 	exit(0)
@@ -135,7 +134,4 @@ if __name__ == "__main__":
 		while True:
 			translate_conversation(browser)
 	except KeyboardInterrupt:
-		print("Bye.")
-		sleep(1)
-		exit(0)
-		# on_exit(browser)
+		on_exit(browser)
