@@ -44,28 +44,33 @@ def wait_for_element(element2Find, browser):
 def load_cookies(browser):
 	cookiesPath = os.path.join(APP_PATH, "assets", "cookies.pkl")
 	if os.path.exists(cookiesPath):
+		print("Loading cookies...")
 		with open(cookiesPath, "rb") as f:
 			cookies = pickle.load(f)
 			for c in cookies:
 				browser.add_cookie(c)
+	else: print("No cookie to load.")
 
 
 def save_cookies(browser):
+	print("Saving cookies...")
 	cookiesPath = os.path.join(APP_PATH, "assets", "cookies.pkl")
 	with open(cookiesPath, "wb") as f:
 		pickle.dump(browser.get_cookies(), f)
 
 
 def on_start():
-	browser = webdriver.Firefox(executable_path = WEBDRIVER)
-	browser.get(WHATSAPP_URL)
+	fp = webdriver.FirefoxProfile()
+	fp.set_preference("network.cookie.cookieBehavior", 0)
+	browser = webdriver.Firefox(executable_path = WEBDRIVER, firefox_profile=fp)
 	load_cookies(browser)
+	browser.get(WHATSAPP_URL)
 
 	return browser
 
 
 def on_exit(browser):
-	save_cookies(browser)
+	# save_cookies(browser)
 	browser.close()
 	print("Bye.")
 	sleep(1)
@@ -74,7 +79,7 @@ def on_exit(browser):
 
 def is_logged_in(browser):
 	wait_for_element("web", browser)
-	print("Asserting if user is logged in.")	
+	print("Asserting if user is logged in...")	
 
 	while True:
 			# with QR Code
@@ -84,6 +89,7 @@ def is_logged_in(browser):
 		except NoSuchElementException:
 			try:
 				browser.find_element_by_id("side")
+				print("Logged-in.")
 				return True
 			except NoSuchElementException:
 				return None
@@ -108,8 +114,8 @@ def translate_conversation(browser):
 			continue
 		except StaleElementReferenceException:
 			continue
-
-	print(f"{n} elements translated.")
+	if n != 0:
+		print(f"{n} elements translated.")
 
 if __name__ == "__main__":
 	try:
@@ -124,6 +130,4 @@ if __name__ == "__main__":
 		while True:
 			translate_conversation(browser)
 	except KeyboardInterrupt:
-		print("Bye.")
-		sleep(1)
-		exit(0)
+		on_exit(browser)
