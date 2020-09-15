@@ -133,5 +133,6 @@ if __name__ == "__main__":
 		# start translation routine	
 		while True:
 			translate_conversation(browser)
+			sleep(1)
 	except KeyboardInterrupt:
 		on_exit(browser)
