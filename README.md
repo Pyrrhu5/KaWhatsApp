@@ -1,6 +1,6 @@
 # KaWhatsApp
 
-Use Selenium and Google translate to automatically translate message in WhatsApp which are in Georgian alphabet.
+Use Selenium and Google translate to automatically translate messages in WhatsApp which are in Georgian alphabet.
 
 ## Installation
 
@@ -10,7 +10,6 @@ Only tested on Linux.
 
 Python version 3.6 or above
 
-_On Linux/Mac:_
 ```bash
 python3 --version
 ```
@@ -28,7 +27,8 @@ git clone https://aymericdeschard@bitbucket.org/aymericdeschard/kawhatsapp.git
 ```
 
 **Virtual env**
-`Run.sh` assumes you have setup a virtual env as such:
+
+Optional, but `Run.sh` assumes you have setup a virtual env as such:
 
 ```bash
 python3 -m venv venv
@@ -53,8 +53,12 @@ Allows execution of entry point (not needed for Windows)
 ```bash
 chmod +x KaWhatsapp.py
 ```
+or, if using the virtual env
+```bash
+chmod +x Run.sh
+```
 
-**Update**
+## Update
 
 ```bash
 git pull
