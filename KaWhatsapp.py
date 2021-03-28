@@ -43,18 +43,20 @@ def wait_for_element(element2Find, browser):
 
 
 def load_cookies(browser):
-	cookiesPath = os.path.join(APP_PATH, "assets", "cookies.pkl")
-	if os.path.exists(cookiesPath):
-		print("Loading cookies...")
-		with open(cookiesPath, "rb") as f:
-			cookies = pickle.load(f)
-			for c in cookies:
-				browser.add_cookie(c)
-	else: print("No cookie to load.")
+	return
+	# cookiesPath = os.path.join(APP_PATH, "assets", "cookies.pkl")
+	# if os.path.exists(cookiesPath):
+	# 	print("Loading cookies...")
+	# 	with open(cookiesPath, "rb") as f:
+	# 		cookies = pickle.load(f)
+	# 		for c in cookies:
+	# 			browser.add_cookie(c)
+	# 	browser.refresh()
+	# else: print("No cookie to load.")
 
 
 def save_cookies(browser):
-	pass
+	return
 	# print("Saving cookies...")
 	# cookiesPath = os.path.join(APP_PATH, "assets", "cookies.pkl")
 	# with open(cookiesPath, "wb") as f:
@@ -62,7 +64,7 @@ def save_cookies(browser):
 
 
 def on_start():
-	fp = webdriver.FirefoxProfile()
+	fp = webdriver.FirefoxProfile("/home/aymeric/.mozilla/firefox/8cxu65gb.KaWhatsApp")
 	fp.set_preference("network.cookie.cookieBehavior", 0)
 	browser = webdriver.Firefox(executable_path = WEBDRIVER, firefox_profile=fp)
 	load_cookies(browser)
@@ -72,7 +74,7 @@ def on_start():
 
 
 def on_exit(browser):
-	# save_cookies(browser)
+	save_cookies(browser)
 	print("Bye.")
 	sleep(1)
 	exit(0)
