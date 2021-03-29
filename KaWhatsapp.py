@@ -48,7 +48,7 @@ def deactivated(func):
 def wait_for_element(element2Find, browser):
 	"""Blocks the execution until an element is found on page."""
 
-	print(f"Waiting for element <{element2Find}> to be on page...")
+	print(f"Waiting for element '{element2Find}' to be on page...")
 
 	while True:
 		try:
@@ -58,7 +58,7 @@ def wait_for_element(element2Find, browser):
 		else:
 			break
 
-	print(f"Element <{element2Find}> found.")
+	print(f"Element '{element2Find}' found.")
 	return
 
 
@@ -138,9 +138,14 @@ def translate_conversation(browser):
 			msgParent = msgParent.find_element_by_tag_name("span")
 			txt = msgParent.text
 			# avoid already translated, smiley, images and none georgian
-			if separator not in txt and is_georgian(txt):
-				translated = translator.translate(txt, src='ka', dest='en')
-				browser.execute_script("arguments[0].innerHTML += '<br>' + arguments[2] + '<br>' + arguments[1] + '<br>' + arguments[2];", msgParent, translated.text, separator)
+			if txt and separator not in txt and is_georgian(txt):
+				try:
+					translated = translator.translate(txt, src='ka', dest='en')
+				except AttributeError as e:
+					print(f"Translator lib error for {txt}")
+					print(e)
+				else:
+					browser.execute_script("arguments[0].innerHTML += '<br>' + arguments[2] + '<br>' + arguments[1] + '<br>' + arguments[2];", msgParent, translated.text, separator)
 				n += 1
 		except NoSuchElementException:
 			continue
@@ -156,14 +161,18 @@ def translate_conversation(browser):
 
 if __name__ == "__main__":
 	try:
-		print("Waiting to connect...")
+		print("Starting...")
 		browser = set_browser()
 		# wait for connection
-		wait_for_element("_1KyAW", browser)
+		print("Waiting for log-in...")
+		# use <header>'s class of the side bar (profile picture, status etc.)
+		wait_for_element("_1R3Un", browser)
 		print("Connected.")
+		print("Waiting to open a conversation...")
 		# conversation tab
-		wait_for_element("z_tTQ", browser)
-		print("Conversation opened.")
+		# Right-side panel main <div> => 
+		wait_for_element("_11liR", browser)
+		print("Conversation open.")
 		# start translation routine	
 		while True:
 			translate_conversation(browser)
