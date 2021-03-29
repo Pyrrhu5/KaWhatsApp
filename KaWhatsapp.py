@@ -5,14 +5,16 @@ import os
 from time import sleep
 import pickle
 import re
+import subprocess
 from functools import wraps
 
 try:
 	from selenium import webdriver
 	from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException 
 	from googletrans import Translator	
-except ModuleNotFoundError:
+except ModuleNotFoundError as e:
 	print("Missing dependency. Run:\npip install -r requirements.txt")
+	print(e)
 	exit(1)
 
 
@@ -22,11 +24,9 @@ except ModuleNotFoundError:
 
 APP_PATH		= os.path.dirname(os.path.abspath(__file__))
 
-WEBDRIVER		= os.path.join(APP_PATH, "assets", "geckodriver_linux64")
 WHATSAPP_URL	= "https://web.whatsapp.com/"
 
 translator = Translator()
-
 
 # ==============================================================================
 #                                     UTILS
@@ -83,14 +83,42 @@ def save_cookies(browser):
 		pickle.dump(browser.get_cookies(), f)
 
 
-def set_browser():
-	fp = webdriver.FirefoxProfile("/home/aymeric/.mozilla/firefox/8cxu65gb.KaWhatsApp")
-	fp.set_preference("network.cookie.cookieBehavior", 0)
-	browser = webdriver.Firefox(executable_path = WEBDRIVER, firefox_profile=fp)
+# ==============================================================================
+#                                 BROWSER CONFIG
+# ==============================================================================
+
+@deactivated
+def set_firefox():
+	pass	
+
+
+def set_brave():
+	option = webdriver.ChromeOptions()
+	
+	# Get the browser executable
+	option.binary_location = subprocess.check_output(["which", "brave-browser"]).decode("utf-8").strip()
+
+	# Create/load a custom user data directory
+	# to maintain connection to whatsapp between sessions
+	dataDir = os.path.join(APP_PATH, "BrowserData")
+	option.add_argument("--user-data-dir=" + dataDir)
+	if not os.path.exists(dataDir):
+		os.mkdir(dataDir) 
+
+	driver = os.path.join(APP_PATH, "assets", "chromedriver_linux64")
+	# Launch the browser
+	browser = webdriver.Chrome(
+		executable_path = driver,
+		options = option
+	)
 	load_cookies(browser)
 	browser.get(WHATSAPP_URL)
 
 	return browser
+
+
+def set_browser():
+	return set_brave()
 
 
 def on_exit(browser):
