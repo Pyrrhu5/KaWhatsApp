@@ -137,11 +137,11 @@ def translate_conversation(browser):
 			msgParent = msgParent.find_element_by_class_name("selectable-text")
 			msgParent = msgParent.find_element_by_tag_name("span")
 			txt = msgParent.text
-			# avoid already translated, smiley, images and none georgian
+			# avoid already translated, smiley, images and none-georgian
 			if txt and separator not in txt and is_georgian(txt):
 				try:
 					translated = translator.translate(txt, src='ka', dest='en')
-				except AttributeError as e:
+				except Exception as e:
 					print(f"Translator lib error for {txt}")
 					print(e)
 				else:
