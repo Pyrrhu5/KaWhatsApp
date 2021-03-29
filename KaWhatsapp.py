@@ -101,9 +101,6 @@ def set_firefox():
 
 
 
-	pass	
-
-
 def set_brave():
 	option = webdriver.ChromeOptions()
 	
