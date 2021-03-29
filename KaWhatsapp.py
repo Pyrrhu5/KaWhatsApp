@@ -87,8 +87,20 @@ def save_cookies(browser):
 #                                 BROWSER CONFIG
 # ==============================================================================
 
-@deactivated
+@deactivated # Not maintaining whatsapp sessions
 def set_firefox():
+	driver	= os.path.join(APP_PATH, "assets", "geckodriver_linux64")
+	fp.set_preference("network.cookie.cookieBehavior", 0)
+	
+	# start browser
+	browser = webdriver.Firefox(executable_path = driver, firefox_profile=fp)
+	load_cookies(browser)
+	browser.get(WHATSAPP_URL)
+
+	return browser
+
+
+
 	pass	
 
 
